@@ -4,8 +4,6 @@ import AppHeader from '../../components/header/AppHeader.vue';
 import HighlightsSection from '../../components/highlights/HighlightsSection.vue';
 import TicketModal from '../../components/abertura-ticket/TicketModal.vue';
 
-const showTicketModal = ref(false);
-
 // Banners para o carrossel
 const banners = ref([
     {
@@ -154,7 +152,8 @@ const handleTicketSubmit = (ticketData) => {
                         <div class="banner-content">
                             <h2>{{ slotProps.data.title }}</h2>
                             <p>{{ slotProps.data.description }}</p>
-                            <Button :label="slotProps.data.buttonText" icon="pi pi-arrow-right" class="p-button-rounded banner-btn" />
+                            <Button :label="slotProps.data.buttonText" icon="pi pi-arrow-right"
+                                class="p-button-rounded banner-btn" />
                         </div>
                     </div>
                 </template>
@@ -162,16 +161,19 @@ const handleTicketSubmit = (ticketData) => {
         </section>
 
         <!-- Modal de Abertura de Ticket -->
-        <Dialog header="Abrir Chamado para o TI" v-model:visible="showTicketModal" :modal="true" :style="{ width: '800px' }">
+        <Dialog header="Abrir Chamado para o TI" v-model:visible="showTicketModal" :modal="true"
+            :style="{ width: '800px' }">
             <div class="flex flex-col gap-4">
                 <div class="flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
                         <label class="font-semibold">Tipo de Chamado</label>
-                        <Dropdown v-model="form.tipo" :options="tipos" optionLabel="label" placeholder="Selecione o tipo" class="w-full" />
+                        <Dropdown v-model="form.tipo" :options="tipos" optionLabel="label"
+                            placeholder="Selecione o tipo" class="w-full" />
                     </div>
                     <div class="flex-1">
                         <label class="font-semibold">Criticidade</label>
-                        <Dropdown v-model="form.criticidade" :options="criticidades" optionLabel="label" placeholder="Selecione a criticidade" class="w-full" />
+                        <Dropdown v-model="form.criticidade" :options="criticidades" optionLabel="label"
+                            placeholder="Selecione a criticidade" class="w-full" />
                     </div>
                 </div>
 
@@ -187,12 +189,15 @@ const handleTicketSubmit = (ticketData) => {
 
                 <div>
                     <label class="font-semibold">Descrição</label>
-                    <Textarea v-model="form.descricao" rows="4" placeholder="Descreva o problema ou solicitação" class="w-full" autoResize />
+                    <Textarea v-model="form.descricao" rows="4" placeholder="Descreva o problema ou solicitação"
+                        class="w-full" autoResize />
                 </div>
 
                 <div>
                     <label class="font-semibold mb-2">Anexos</label>
-                    <FileUpload mode="basic" name="file" url="./upload" accept=".jpg,.png,.pdf,.docx" :auto="true" chooseLabel="Selecionar Arquivo" class="p-button p-button-sm p-button-outlined p-button-primary" chooseIcon="pi pi-upload" />
+                    <FileUpload mode="basic" name="file" url="./upload" accept=".jpg,.png,.pdf,.docx" :auto="true"
+                        chooseLabel="Selecionar Arquivo" class="p-button p-button-sm p-button-outlined p-button-primary"
+                        chooseIcon="pi pi-upload" />
                 </div>
             </div>
 
