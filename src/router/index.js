@@ -112,6 +112,11 @@ const router = createRouter({
             component: () => import('@/views/pages/Landing.vue')
         },
         {
+            path: '/tickets',
+            name: 'tickets',
+            component: () => import('@/views/pages/ticket/Ticket.vue')
+        },
+        {
             path: '/pages/notfound',
             name: 'notfound',
             component: () => import('@/views/pages/NotFound.vue')
