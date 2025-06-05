@@ -223,54 +223,93 @@ const getPrioridadeClass = (prioridade) => {
                     <!-- Aba: Meus Chamados -->
                     <div v-if="activeTab === 'lista'" class="p-0">
                         <DataTable :value="chamados" :paginator="true" :rows="10"
-                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+                            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                             currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} chamados"
-                            class="p-datatable-sm">
-                            <Column field="id" header="ID" :sortable="true" style="width: 120px">
+                            :rowsPerPageOptions="[5, 10, 20, 50]" class="p-datatable-sm chamados-table"
+                            responsiveLayout="scroll">
+
+                            <Column field="id" header="ID" :sortable="true" style="min-width: 120px">
                                 <template #body="{ data }">
-                                    <span class="font-mono text-blue-600">{{ data.id }}</span>
+                                    <span
+                                        class="font-mono font-semibold text-blue-600 hover:text-blue-800 cursor-pointer">
+                                        {{ data.id }}
+                                    </span>
                                 </template>
                             </Column>
 
-                            <Column field="titulo" header="Título" :sortable="true">
+                            <Column field="titulo" header="Título" :sortable="true" style="min-width: 200px">
                                 <template #body="{ data }">
-                                    <div class="flex items-center">
-                                        <i :class="getTipoIcon(data.tipo)" class="mr-2 text-gray-500"></i>
-                                        {{ data.titulo }}
+                                    <div class="flex items-center space-x-3">
+                                        <div :class="getTipoIcon(data.tipo)"
+                                            class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600">
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-900">{{ data.titulo }}</div>
+                                            <div class="text-xs text-gray-500">{{ data.ultimaAtualizacao }}</div>
+                                        </div>
                                     </div>
                                 </template>
                             </Column>
 
-                            <Column field="prioridade" header="Prioridade" :sortable="true" style="width: 140px">
+                            <Column field="prioridade" header="Prioridade" :sortable="true" style="min-width: 120px">
                                 <template #body="{ data }">
-                                    <Tag :value="data.prioridade"
-                                        :severity="data.prioridade === 'critica' ? 'danger' : data.prioridade === 'alta' ? 'warning' : 'info'" />
+                                    <div class="flex items-center">
+                                        <Tag :value="data.prioridade.toUpperCase()"
+                                            :class="getPrioridadeClass(data.prioridade)"
+                                            class="rounded-md font-medium px-3 py-1 text-xs" />
+                                    </div>
                                 </template>
                             </Column>
 
-                            <Column field="dataAbertura" header="Data" :sortable="true" style="width: 120px" />
+                            <Column field="dataAbertura" header="Abertura" :sortable="true" style="min-width: 100px">
+                                <template #body="{ data }">
+                                    <div class="text-sm font-medium text-gray-700">{{ data.dataAbertura }}</div>
+                                </template>
+                            </Column>
 
-                            <Column field="status" header="Status" :sortable="true" style="width: 160px">
+                            <Column field="status" header="Status" :sortable="true" style="min-width: 140px">
                                 <template #body="{ data }">
                                     <div class="flex items-center">
-                                        <span class="status-badge" :class="{
+                                        <span class="status-badge flex items-center" :class="{
                                             'bg-green-100 text-green-800': data.status === 'Resolvido',
                                             'bg-blue-100 text-blue-800': data.status === 'Em andamento',
                                             'bg-yellow-100 text-yellow-800': data.status === 'Aguardando',
-                                            'bg-gray-100 text-gray-800': data.status === 'Aberto'
+                                            'bg-gray-100 text-gray-800': data.status === 'Aberto',
+                                            'bg-purple-100 text-purple-800': data.status === 'Em análise'
                                         }">
+                                            <span class="w-2 h-2 rounded-full mr-2" :class="{
+                                                'bg-green-500': data.status === 'Resolvido',
+                                                'bg-blue-500': data.status === 'Em andamento',
+                                                'bg-yellow-500': data.status === 'Aguardando',
+                                                'bg-gray-500': data.status === 'Aberto',
+                                                'bg-purple-500': data.status === 'Em análise'
+                                            }"></span>
                                             {{ data.status }}
                                         </span>
                                     </div>
                                 </template>
                             </Column>
 
-                            <Column header="Ações" style="width: 100px">
+                            <Column header="Ações" style="min-width: 100px">
                                 <template #body>
-                                    <Button icon="pi pi-eye" class="p-button-text p-button-sm"
-                                        v-tooltip.top="'Ver detalhes'" />
+                                    <div class="flex space-x-2">
+                                        <Button icon="pi pi-eye"
+                                            class="p-button-text p-button-sm p-button-rounded hover:bg-blue-100 text-blue-500"
+                                            v-tooltip.top="'Ver detalhes'" />
+                                        <Button icon="pi pi-comment"
+                                            class="p-button-text p-button-sm p-button-rounded hover:bg-green-100 text-green-500"
+                                            v-tooltip.top="'Adicionar comentário'" />
+                                    </div>
                                 </template>
                             </Column>
+
+                            <template #empty>
+                                <div class="flex flex-col items-center justify-center py-10">
+                                    <i class="pi pi-inbox text-4xl text-gray-400 mb-4"></i>
+                                    <h3 class="text-lg font-medium text-gray-700">Nenhum chamado encontrado</h3>
+                                    <p class="text-gray-500 text-sm">Você não possui chamados abertos no momento</p>
+                                </div>
+                            </template>
                         </DataTable>
                     </div>
                 </div>
@@ -286,7 +325,7 @@ const getPrioridadeClass = (prioridade) => {
 
 .main-content {
     @apply pt-16;
-    margin: 60px;
+    margin: 40px;
     /* Compensar o header fixo */
 }
 
@@ -335,6 +374,63 @@ const getPrioridadeClass = (prioridade) => {
 
     .tabs-container button {
         @apply flex-1 justify-center;
+    }
+}
+
+/* Estilos aprimorados para a tabela */
+.chamados-table :deep(.p-datatable-wrapper) {
+    @apply border border-gray-200 rounded-lg overflow-hidden;
+}
+
+.chamados-table :deep(.p-datatable-thead > tr > th) {
+    @apply bg-gray-50 text-gray-700 font-semibold text-xs uppercase tracking-wider border-b border-gray-200 px-4 py-3;
+}
+
+.chamados-table :deep(.p-datatable-tbody > tr > td) {
+    @apply px-4 py-3 border-b border-gray-100 text-sm;
+}
+
+.chamados-table :deep(.p-datatable-tbody > tr:hover) {
+    @apply bg-blue-50;
+}
+
+.chamados-table :deep(.p-paginator) {
+    @apply bg-white border-t border-gray-200 px-4 py-3 rounded-b-lg;
+}
+
+.chamados-table :deep(.p-paginator .p-paginator-pages .p-paginator-page.p-highlight) {
+    @apply bg-blue-600 text-white;
+}
+
+.chamados-table :deep(.p-paginator .p-dropdown) {
+    @apply border-gray-300;
+}
+
+.status-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+}
+
+/* Efeito de hover nos botões de ação */
+.chamados-table :deep(.p-button.p-button-text:hover) {
+    @apply bg-opacity-20;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .chamados-table :deep(.p-datatable-thead) {
+        @apply hidden;
+    }
+
+    .chamados-table :deep(.p-datatable-tbody > tr) {
+        @apply flex flex-col mb-4 border border-gray-200 rounded-lg p-4;
+    }
+
+    .chamados-table :deep(.p-datatable-tbody > tr > td) {
+        @apply border-0 px-0 py-1 before:content-[attr(data-label)] before:block before:text-xs before:text-gray-500 before:font-medium;
+    }
+
+    .chamados-table :deep(.p-column-title) {
+        @apply hidden;
     }
 }
 </style>
